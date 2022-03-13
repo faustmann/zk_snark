@@ -26,16 +26,22 @@ ts = t(s)
 '''
 prover receives encrypted powers of s and evals them on h and p
 '''
+h, h_remainder = np.polydiv(p, t)
+delta = np.random.randint(low=0, high=20)
 
+enc_hs = np.prod(np.power(enc_s[:len(h.coef)],
+                 list(reversed(h.coef)))) ** delta
+enc_ps = np.prod(np.power(enc_s[:len(p.coef)],
+                 list(reversed(p.coef)))) ** delta
 
-enc_ps = np.prod(np.power(enc_s[:len(p.coef)], list(reversed(p.coef))))
 shift_enc_ps = np.prod(
-    np.power(shift_enc_s[:len(p.coef)], list(reversed(p.coef))))
+    np.power(shift_enc_s[:len(p.coef)], list(reversed(p.coef)))) ** delta
 
 '''
 verifier checks if p(s) = t(s) * h(s) (encoded)  
 ... prover deliveres encoded p(s) and h(s)
 '''
-print(f'is valid {shift_enc_ps == enc_ps ** alpha }')
+print(
+    f'is valid {shift_enc_ps == enc_ps ** alpha and enc_ps == enc_hs ** ts }')
 
 print('fin')
